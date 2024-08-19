@@ -17,7 +17,7 @@ type Employee struct {
 	Id        uuid.UUID
 	Name      string
 	Country   string
-	SalaryId  uuid.UUID
+	Salary    *Salary
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -28,7 +28,7 @@ type EmployeeRepository interface {
 	GetById(id uuid.UUID) (*Employee, error)
 }
 
-func NewEmployee(name string, country string, salaryId uuid.UUID) (*Employee, error) {
+func NewEmployee(name string, country string, currency string, value float64) (*Employee, error) {
 	match, _ := regexp.MatchString("[a-zA-Z]{1,16}", name)
 	if !match {
 		return nil, ErrInvalidName
@@ -39,12 +39,17 @@ func NewEmployee(name string, country string, salaryId uuid.UUID) (*Employee, er
 		return nil, ErrInvalidCountry
 	}
 
+	salary, err := NewSalary(currency, value)
+	if err != nil {
+		return nil, err
+	}
+
 	now := time.Now()
 	return &Employee{
 		Id:        pkg.GenerateUUID(),
 		Name:      name,
 		Country:   country,
-		SalaryId:  salaryId,
+		Salary:    salary,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}, nil
