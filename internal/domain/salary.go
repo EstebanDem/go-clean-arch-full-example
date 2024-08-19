@@ -10,7 +10,7 @@ import (
 
 var (
 	ErrInvalidCurrency = errors.New("invalid currency")
-	ErrValue           = errors.New("invalid value, it must be positive")
+	ErrInvalidValue    = errors.New("invalid value, it must be positive")
 )
 
 type Salary struct {
@@ -34,7 +34,7 @@ func NewSalary(currency string, value float64) (*Salary, error) {
 	}
 
 	if value <= 0 {
-		return nil, ErrValue
+		return nil, ErrInvalidValue
 	}
 
 	now := time.Now()
