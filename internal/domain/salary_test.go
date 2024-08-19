@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"errors"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -9,17 +8,13 @@ import (
 func TestNewSalaryWrongCurrency(t *testing.T) {
 	_, err := NewSalary("-", 260)
 
-	if !errors.Is(ErrInvalidCurrency, err) {
-		t.Errorf("got %q, expected %q", err.Error(), ErrInvalidCurrency.Error())
-	}
+	assert.Error(t, ErrInvalidCurrency, err)
 }
 
 func TestNewSalaryWrongValue(t *testing.T) {
 	_, err := NewSalary("ARS", 0)
 
-	if !errors.Is(ErrInvalidValue, err) {
-		t.Errorf("got %q, expected %q", err.Error(), ErrInvalidValue.Error())
-	}
+	assert.Error(t, ErrInvalidValue, err)
 }
 
 func TestNewSalary(t *testing.T) {
