@@ -1,4 +1,4 @@
-module go-clean-crud-mine
+module go-clean-arch-example
 
 go 1.22.0
 

@@ -3,7 +3,7 @@ package domain
 import (
 	"errors"
 	"github.com/google/uuid"
-	"go-clean-crud-mine/internal/pkg"
+	"go-clean-arch-example/internal/pkg"
 	"regexp"
 	"time"
 )
