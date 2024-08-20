@@ -11,6 +11,7 @@ import (
 var (
 	ErrInvalidCurrency = errors.New("invalid currency")
 	ErrInvalidValue    = errors.New("invalid value, it must be positive")
+	ErrSalaryNotFound  = errors.New("salary not found")
 )
 
 type Salary struct {

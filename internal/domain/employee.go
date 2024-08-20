@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	ErrInvalidName    = errors.New("invalid employee name")
-	ErrInvalidCountry = errors.New("invalid country")
+	ErrInvalidName      = errors.New("invalid employee name")
+	ErrInvalidCountry   = errors.New("invalid country")
+	ErrEmployeeNotFound = errors.New("employee not found")
 )
 
 type Employee struct {
