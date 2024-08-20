@@ -6,21 +6,21 @@ import (
 )
 
 func TestNewEmployeeWrongName(t *testing.T) {
-	_, err := NewEmployee("ABC123", "Argentina", "ARS", 200.50)
+	_, err := NewEmployee("123", "Argentina", "ARS", 200.50)
 
-	assert.Error(t, ErrInvalidName, err)
+	assert.Equal(t, ErrInvalidName, err)
 }
 
 func TestNewEmployeeWrongCountry(t *testing.T) {
-	_, err := NewEmployee("Pedro", "Argentina 2024", "ARS", 200.50)
+	_, err := NewEmployee("Pedro", "333", "ARS", 200.50)
 
-	assert.Error(t, ErrInvalidCountry, err)
+	assert.Equal(t, ErrInvalidCountry, err)
 }
 
 func TestNewEmployeeWrongSalary(t *testing.T) {
 	_, err := NewEmployee("Pedro", "Argentina", "ARS", 0)
 
-	assert.Error(t, ErrInvalidValue, err)
+	assert.Equal(t, ErrInvalidValue, err)
 }
 
 func TestNewEmployee(t *testing.T) {
