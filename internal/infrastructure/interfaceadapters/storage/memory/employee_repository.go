@@ -10,57 +10,57 @@ type InMemoryEmployee struct {
 	Id        uuid.UUID
 	Name      string
 	Country   string
-	SalaryId  uuid.UUID
+	Salary    InMemorySalary
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func (i InMemoryEmployeeRepository) toDomainEmployee(emp InMemoryEmployee) (domain.Employee, error) {
-	salary, err := i.salaryRepo.GetById(emp.SalaryId)
-	if err != nil {
-		return domain.Employee{}, err
-	}
+type InMemorySalary struct {
+	Currency string
+	Value    float64
+}
 
+func toDomainEmployee(emp InMemoryEmployee) domain.Employee {
 	return domain.Employee{
-		Id:        emp.Id,
-		Name:      emp.Name,
-		Country:   emp.Country,
-		Salary:    salary,
+		Id:      emp.Id,
+		Name:    emp.Name,
+		Country: emp.Country,
+		Salary: domain.Salary{
+			Currency: emp.Salary.Currency,
+			Value:    emp.Salary.Value,
+		},
 		CreatedAt: emp.CreatedAt,
 		UpdatedAt: emp.CreatedAt,
-	}, nil
+	}
 }
 
 func toInMemoryEmployee(e domain.Employee) InMemoryEmployee {
 	return InMemoryEmployee{
-		Id:        e.Id,
-		Name:      e.Name,
-		Country:   e.Country,
-		SalaryId:  e.Salary.Id,
+		Id:      e.Id,
+		Name:    e.Name,
+		Country: e.Country,
+		Salary: InMemorySalary{
+			Currency: e.Salary.Currency,
+			Value:    e.Salary.Value,
+		},
 		CreatedAt: e.CreatedAt,
 		UpdatedAt: e.UpdatedAt,
 	}
 }
 
 type InMemoryEmployeeRepository struct {
-	employees  map[uuid.UUID]InMemoryEmployee
-	salaryRepo InMemorySalaryRepository
+	employees map[uuid.UUID]InMemoryEmployee
 }
 
-func NewInMemoryEmployeeRepository(salaryRepo InMemorySalaryRepository) InMemoryEmployeeRepository {
+func NewInMemoryEmployeeRepository() InMemoryEmployeeRepository {
 	employees := make(map[uuid.UUID]InMemoryEmployee)
 	return InMemoryEmployeeRepository{
-		employees:  employees,
-		salaryRepo: salaryRepo,
+		employees: employees,
 	}
 }
 
 func (i InMemoryEmployeeRepository) Save(e domain.Employee) error {
 	employee := toInMemoryEmployee(e)
-	_, err := i.salaryRepo.GetById(e.Salary.Id)
-	if err != nil {
-		return err
-	}
 	i.employees[employee.Id] = employee
 	return nil
 }
@@ -81,10 +81,7 @@ func (i InMemoryEmployeeRepository) GetById(id uuid.UUID) (*domain.Employee, err
 		return nil, domain.ErrEmployeeNotFound
 	}
 
-	dEmployee, err := i.toDomainEmployee(employee)
-	if err != nil {
-		return nil, err
-	}
+	dEmployee := toDomainEmployee(employee)
 
 	return &dEmployee, nil
 }

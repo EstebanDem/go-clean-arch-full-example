@@ -17,8 +17,9 @@ func TestInMemoryEmployeeRepository_GetById(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, "Walter", employee.Name)
-	assert.Equal(t, "Japan", employee.Country)
-	assert.Equal(t, salaryId, employee.Salary.Id)
+	assert.Equal(t, "Argentina", employee.Country)
+	assert.Equal(t, "ARS", employee.Salary.Currency)
+	assert.Equal(t, 270.00, employee.Salary.Value)
 }
 
 func TestInMemoryEmployeeRepository_GetByIdNotFound(t *testing.T) {
@@ -48,12 +49,9 @@ func TestInMemoryEmployeeRepository_Save(t *testing.T) {
 		Id:      uuid.MustParse("fb20b5c9-f99c-9876-a021-3c3edd7f4af9"),
 		Name:    "Hector",
 		Country: "USA",
-		Salary: &domain.Salary{
-			Id:        salaryId,
-			Currency:  "ARS",
-			Value:     250.0,
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
+		Salary: domain.Salary{
+			Currency: "USD",
+			Value:    250.0,
 		},
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -64,34 +62,16 @@ func TestInMemoryEmployeeRepository_Save(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestInMemoryEmployeeRepository_SaveSalaryNotFound(t *testing.T) {
-	employeeRepo := buildInMemoryEmployeeRepo()
-	err := employeeRepo.Save(domain.Employee{
-		Id:      uuid.MustParse("fb20b5c9-f99c-9876-a021-3c3edd7f4af9"),
-		Name:    "Hector",
-		Country: "USA",
-		Salary: &domain.Salary{
-			Id:        uuid.MustParse("fb20b5c9-f99c-9876-a777-3c3edd7f4af9"),
-			Currency:  "ARS",
-			Value:     250.0,
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-		},
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	})
-	assert.Equal(t, domain.ErrSalaryNotFound, err)
-}
-
 func buildInMemoryEmployeeRepo() InMemoryEmployeeRepository {
-	salaryRepo := buildInMemorySalaryRepo()
-	salary, _ := salaryRepo.GetById(salaryId)
-	employeeRepo := NewInMemoryEmployeeRepository(salaryRepo)
+	employeeRepo := NewInMemoryEmployeeRepository()
 	err := employeeRepo.Save(domain.Employee{
-		Id:        employeeId,
-		Name:      "Walter",
-		Country:   "Japan",
-		Salary:    salary,
+		Id:      employeeId,
+		Name:    "Walter",
+		Country: "Argentina",
+		Salary: domain.Salary{
+			Currency: "ARS",
+			Value:    270.00,
+		},
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
