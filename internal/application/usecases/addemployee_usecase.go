@@ -37,12 +37,12 @@ func (uc addEmployeeUseCase) AddEmployee(request AddEmployeeRequest) (AddEmploye
 		return AddEmployeeResponse{}, err
 	}
 
-	err = uc.employeesRepo.Save(*employee)
+	err = uc.salaryRepo.Save(*employee.Salary)
 	if err != nil {
 		return AddEmployeeResponse{}, err
 	}
 
-	err = uc.salaryRepo.Save(*employee.Salary)
+	err = uc.employeesRepo.Save(*employee)
 	if err != nil {
 		return AddEmployeeResponse{}, err
 	}
