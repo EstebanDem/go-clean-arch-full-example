@@ -28,16 +28,10 @@ type AddEmployeeUseCase interface {
 
 type addEmployeeUseCase struct {
 	employeesRepo domain.EmployeeRepository
-	salaryRepo    domain.SalaryRepository
 }
 
 func (uc addEmployeeUseCase) AddEmployee(request AddEmployeeRequest) (AddEmployeeResponse, error) {
 	employee, err := domain.NewEmployee(request.Name, request.Country, request.Salary.Currency, request.Salary.Value)
-	if err != nil {
-		return AddEmployeeResponse{}, err
-	}
-
-	err = uc.salaryRepo.Save(*employee.Salary)
 	if err != nil {
 		return AddEmployeeResponse{}, err
 	}
@@ -53,9 +47,8 @@ func (uc addEmployeeUseCase) AddEmployee(request AddEmployeeRequest) (AddEmploye
 	}, nil
 }
 
-func InitEmployeeUseCase(er domain.EmployeeRepository, sr domain.SalaryRepository) AddEmployeeUseCase {
+func InitEmployeeUseCase(er domain.EmployeeRepository) AddEmployeeUseCase {
 	return addEmployeeUseCase{
 		employeesRepo: er,
-		salaryRepo:    sr,
 	}
 }
