@@ -10,11 +10,9 @@ import (
 )
 
 type AddEmployeeRequestJson struct {
-	Name     string            `json:"name" validate:"required"`
-	Country  string            `json:"country" validate:"required"`
-	Salary   SalaryRequestJson `json:"salary" validate:"required"`
-	Currency string            `json:"currency" validate:"required"`
-	Value    float64           `json:"value" validate:"required"`
+	Name    string            `json:"name" validate:"required"`
+	Country string            `json:"country" validate:"required"`
+	Salary  SalaryRequestJson `json:"salary" validate:"required"`
 }
 
 type SalaryRequestJson struct {
