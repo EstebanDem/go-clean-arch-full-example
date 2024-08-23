@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-resty/resty/v2"
+	"strings"
 )
 
 var (
@@ -30,7 +31,7 @@ type FreeCurrencyApiJsonResponse struct {
 func (f *FreeCurrencyApiClient) GetExchangeRate(baseCurrency string, currency string) (float64, error) {
 	url := "https://api.freecurrencyapi.com/v1/latest?apikey=%s&currencies=%s&base_currency=%s"
 
-	resp, err := f.restClient.R().Get(fmt.Sprintf(url, f.apikey, currency, baseCurrency))
+	resp, err := f.restClient.R().Get(fmt.Sprintf(url, f.apikey, strings.ToUpper(currency), strings.ToUpper(baseCurrency)))
 
 	if err != nil {
 		return 0, err
