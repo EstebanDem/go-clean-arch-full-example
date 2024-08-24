@@ -57,7 +57,7 @@ func GetEmployeeSalaryHandler(uc usecases.GetEmployeeSalaryUseCase) http.Handler
 		}
 
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(http.StatusCreated)
+		w.WriteHeader(http.StatusOK)
 		if _, err := w.Write(jsonResponse); err != nil {
 			return
 		}

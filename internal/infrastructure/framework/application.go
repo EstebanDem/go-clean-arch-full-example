@@ -4,7 +4,8 @@ import (
 	"go-clean-arch-example/internal/application/usecases"
 	"go-clean-arch-example/internal/infrastructure/inputports/http/handler"
 	"go-clean-arch-example/internal/infrastructure/interfaceadapters/restclients"
-	"go-clean-arch-example/internal/infrastructure/interfaceadapters/storage/memory"
+	"go-clean-arch-example/internal/infrastructure/interfaceadapters/storage/mysql"
+	"log"
 	"net/http"
 	"os"
 )
@@ -13,7 +14,12 @@ func NewApp() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	// repositories
-	repo := memory.NewInMemoryEmployeeRepository()
+	//repo := memory.NewInMemoryEmployeeRepository()
+	repo, err := mysql.NewMySqlEmployeeRepository()
+	if err != nil {
+		log.Fatal(err.Error())
+		return nil
+	}
 
 	// clients
 	freeCurrencyApiClient := restclients.NewFreeCurrencyApiClient(os.Getenv("API_KEY"))
