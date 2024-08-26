@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	"errors"
 	"github.com/google/uuid"
 	"go-clean-arch-example/internal/pkg"
@@ -31,9 +32,9 @@ type Salary struct {
 }
 
 type EmployeeRepository interface {
-	Save(e Employee) error
-	Delete(id uuid.UUID) error
-	GetById(id uuid.UUID) (*Employee, error)
+	Save(ctx context.Context, e Employee) error
+	Delete(ctx context.Context, id uuid.UUID) error
+	GetById(ctx context.Context, id uuid.UUID) (*Employee, error)
 }
 
 func NewEmployee(name string, country string, currency string, value float64) (*Employee, error) {

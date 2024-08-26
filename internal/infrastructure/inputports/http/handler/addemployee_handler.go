@@ -41,7 +41,7 @@ func AddEmployeeHandler(uc usecases.AddEmployeeUseCase) http.HandlerFunc {
 			return
 		}
 
-		resp, err := uc.AddEmployee(addEmployeeRequest.toAddEmployeeRequest())
+		resp, err := uc.AddEmployee(r.Context(), addEmployeeRequest.toAddEmployeeRequest())
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return

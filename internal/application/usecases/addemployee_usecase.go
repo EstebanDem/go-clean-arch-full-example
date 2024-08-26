@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"context"
 	"github.com/google/uuid"
 	"go-clean-arch-example/internal/domain"
 	"time"
@@ -23,20 +24,20 @@ type AddEmployeeResponse struct {
 }
 
 type AddEmployeeUseCase interface {
-	AddEmployee(request AddEmployeeRequest) (AddEmployeeResponse, error)
+	AddEmployee(ctx context.Context, request AddEmployeeRequest) (AddEmployeeResponse, error)
 }
 
 type addEmployeeUseCase struct {
 	employeesRepo domain.EmployeeRepository
 }
 
-func (uc addEmployeeUseCase) AddEmployee(request AddEmployeeRequest) (AddEmployeeResponse, error) {
+func (uc addEmployeeUseCase) AddEmployee(ctx context.Context, request AddEmployeeRequest) (AddEmployeeResponse, error) {
 	employee, err := domain.NewEmployee(request.Name, request.Country, request.Salary.Currency, request.Salary.Value)
 	if err != nil {
 		return AddEmployeeResponse{}, err
 	}
 
-	err = uc.employeesRepo.Save(*employee)
+	err = uc.employeesRepo.Save(ctx, *employee)
 	if err != nil {
 		return AddEmployeeResponse{}, err
 	}

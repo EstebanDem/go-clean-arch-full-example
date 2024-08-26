@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -73,8 +74,8 @@ func NewMySqlEmployeeRepository() (EmployeeRepositoryMySql, error) {
 
 }
 
-func (er EmployeeRepositoryMySql) Save(e domain.Employee) error {
-	result, err := er.db.Exec(`insert into salary (currency, wage)
+func (er EmployeeRepositoryMySql) Save(ctx context.Context, e domain.Employee) error {
+	result, err := er.db.ExecContext(ctx, `insert into salary (currency, wage)
 	values (?, ?)`, e.Salary.Currency, e.Salary.Value)
 	if err != nil {
 		return err
@@ -85,7 +86,7 @@ func (er EmployeeRepositoryMySql) Save(e domain.Employee) error {
 		return err
 	}
 
-	_, err = er.db.Exec(`insert into employee (uuid, name, country, salary_id, created_at, updated_at)
+	_, err = er.db.ExecContext(ctx, `insert into employee (uuid, name, country, salary_id, created_at, updated_at)
 	values (?, ?, ?, ?, ?, ?)`, e.Id.String(), e.Name, e.Country, salaryId, e.CreatedAt, e.UpdatedAt)
 	if err != nil {
 		return err
@@ -94,18 +95,18 @@ func (er EmployeeRepositoryMySql) Save(e domain.Employee) error {
 	return nil
 }
 
-func (er EmployeeRepositoryMySql) Delete(id uuid.UUID) error {
-	employeeRow, err := er.getRowFromUUID(id)
+func (er EmployeeRepositoryMySql) Delete(ctx context.Context, id uuid.UUID) error {
+	employeeRow, err := er.getRowFromUUID(ctx, id)
 	if err != nil {
 		return err
 	}
 
-	_, err = er.db.Exec("delete from employee where id = ?", employeeRow.id)
+	_, err = er.db.ExecContext(ctx, "delete from employee where id = ?", employeeRow.id)
 	if err != nil {
 		return err
 	}
 
-	_, err = er.db.Exec("delete from salary where id = ?", employeeRow.SalaryId)
+	_, err = er.db.ExecContext(ctx, "delete from salary where id = ?", employeeRow.SalaryId)
 	if err != nil {
 		return err
 	}
@@ -113,14 +114,14 @@ func (er EmployeeRepositoryMySql) Delete(id uuid.UUID) error {
 	return nil
 }
 
-func (er EmployeeRepositoryMySql) GetById(id uuid.UUID) (*domain.Employee, error) {
-	employeeRow, err := er.getRowFromUUID(id)
+func (er EmployeeRepositoryMySql) GetById(ctx context.Context, id uuid.UUID) (*domain.Employee, error) {
+	employeeRow, err := er.getRowFromUUID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
 	var employeeWithSalary EmployeeWithSalary
-	row := er.db.QueryRow(`
+	row := er.db.QueryRowContext(ctx, `
 		select e.uuid, e.name, e.country, s.currency, s.wage, e.created_at, e.updated_at
     	from employee e 
 		inner join salary s on s.id = e.salary_id
@@ -141,9 +142,9 @@ func (er EmployeeRepositoryMySql) GetById(id uuid.UUID) (*domain.Employee, error
 	return &empDomain, nil
 }
 
-func (er EmployeeRepositoryMySql) getRowFromUUID(uuId uuid.UUID) (EmployeeRecord, error) {
+func (er EmployeeRepositoryMySql) getRowFromUUID(ctx context.Context, uuId uuid.UUID) (EmployeeRecord, error) {
 	var employeeRecord EmployeeRecord
-	row := er.db.QueryRow("select id, salary_id from employee where uuid = ?", uuId.String())
+	row := er.db.QueryRowContext(ctx, "select id, salary_id from employee where uuid = ?", uuId.String())
 	if err := row.Scan(&employeeRecord.id, &employeeRecord.SalaryId); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return EmployeeRecord{}, fmt.Errorf("no such employee with uuid: %s", uuId.String())

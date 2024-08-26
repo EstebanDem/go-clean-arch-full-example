@@ -44,7 +44,7 @@ func GetEmployeeSalaryHandler(uc usecases.GetEmployeeSalaryUseCase) http.Handler
 			Currency:   currency,
 		}
 
-		employeeResponse, err := uc.GetSalary(employeeRequest)
+		employeeResponse, err := uc.GetSalary(r.Context(), employeeRequest)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return

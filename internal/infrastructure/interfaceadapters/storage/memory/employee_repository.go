@@ -1,6 +1,7 @@
 package memory
 
 import (
+	"context"
 	"github.com/google/uuid"
 	"go-clean-arch-example/internal/domain"
 	"time"
@@ -59,13 +60,13 @@ func NewInMemoryEmployeeRepository() InMemoryEmployeeRepository {
 	}
 }
 
-func (i InMemoryEmployeeRepository) Save(e domain.Employee) error {
+func (i InMemoryEmployeeRepository) Save(_ context.Context, e domain.Employee) error {
 	employee := toInMemoryEmployee(e)
 	i.employees[employee.Id] = employee
 	return nil
 }
 
-func (i InMemoryEmployeeRepository) Delete(id uuid.UUID) error {
+func (i InMemoryEmployeeRepository) Delete(_ context.Context, id uuid.UUID) error {
 	_, ok := i.employees[id]
 	if !ok {
 		return domain.ErrEmployeeNotFound
@@ -75,7 +76,7 @@ func (i InMemoryEmployeeRepository) Delete(id uuid.UUID) error {
 	return nil
 }
 
-func (i InMemoryEmployeeRepository) GetById(id uuid.UUID) (*domain.Employee, error) {
+func (i InMemoryEmployeeRepository) GetById(_ context.Context, id uuid.UUID) (*domain.Employee, error) {
 	employee, ok := i.employees[id]
 	if !ok {
 		return nil, domain.ErrEmployeeNotFound
