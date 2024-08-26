@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"context"
 	"github.com/google/uuid"
 	"go-clean-arch-example/internal/application/services"
 	"go-clean-arch-example/internal/domain"
@@ -29,7 +30,7 @@ type ConvertedSalary struct {
 }
 
 type GetEmployeeSalaryUseCase interface {
-	GetSalary(request GetEmployeeSalaryRequest) (GetEmployeeSalaryResponse, error)
+	GetSalary(ctx context.Context, request GetEmployeeSalaryRequest) (GetEmployeeSalaryResponse, error)
 }
 
 type getEmployeeSalaryUseCase struct {
@@ -37,8 +38,8 @@ type getEmployeeSalaryUseCase struct {
 	currencyConverter services.CurrencyConverter
 }
 
-func (g getEmployeeSalaryUseCase) GetSalary(request GetEmployeeSalaryRequest) (GetEmployeeSalaryResponse, error) {
-	employee, err := g.employeesRepo.GetById(request.EmployeeId)
+func (g getEmployeeSalaryUseCase) GetSalary(ctx context.Context, request GetEmployeeSalaryRequest) (GetEmployeeSalaryResponse, error) {
+	employee, err := g.employeesRepo.GetById(ctx, request.EmployeeId)
 	if err != nil {
 		return GetEmployeeSalaryResponse{}, err
 	}

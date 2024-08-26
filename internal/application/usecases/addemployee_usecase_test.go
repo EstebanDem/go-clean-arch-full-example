@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"context"
 	"errors"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -19,7 +20,7 @@ func TestAddEmployeeUseCaseInvalidRequest(t *testing.T) {
 			Value:    0,
 		},
 	}
-	_, err := uc.AddEmployee(request)
+	_, err := uc.AddEmployee(context.Background(), request)
 
 	assert.Error(t, err)
 	assert.Equal(t, domain.ErrInvalidValue, err)
@@ -37,8 +38,8 @@ func TestAddEmployeeUseCaseErrorOnSavingEmployeeRepo(t *testing.T) {
 		},
 	}
 
-	employeeRepo.On("Save", mock.Anything).Return(errors.New("error saving employee"))
-	_, err := uc.AddEmployee(request)
+	employeeRepo.On("Save", mock.Anything, mock.Anything).Return(errors.New("error saving employee"))
+	_, err := uc.AddEmployee(context.Background(), request)
 
 	assert.Error(t, err)
 	assert.Equal(t, "error saving employee", err.Error())
@@ -56,8 +57,8 @@ func TestAddEmployeeUseCase(t *testing.T) {
 		},
 	}
 
-	employeeRepo.On("Save", mock.Anything).Return(nil)
-	_, err := uc.AddEmployee(request)
+	employeeRepo.On("Save", mock.Anything, mock.Anything).Return(nil)
+	_, err := uc.AddEmployee(context.Background(), request)
 
 	assert.NoError(t, err)
 }
@@ -67,17 +68,17 @@ type employeeRepoMock struct {
 	mock.Mock
 }
 
-func (e2 employeeRepoMock) Save(e domain.Employee) error {
-	args := e2.Called(e)
+func (e2 employeeRepoMock) Save(ctx context.Context, e domain.Employee) error {
+	args := e2.Called(ctx, e)
 	return args.Error(0)
 }
 
-func (e2 employeeRepoMock) Delete(id uuid.UUID) error {
-	args := e2.Called(id)
+func (e2 employeeRepoMock) Delete(ctx context.Context, id uuid.UUID) error {
+	args := e2.Called(ctx, id)
 	return args.Error(0)
 }
 
-func (e2 employeeRepoMock) GetById(id uuid.UUID) (*domain.Employee, error) {
-	args := e2.Called(id)
+func (e2 employeeRepoMock) GetById(ctx context.Context, id uuid.UUID) (*domain.Employee, error) {
+	args := e2.Called(ctx, id)
 	return args.Get(0).(*domain.Employee), args.Error(1)
 }
