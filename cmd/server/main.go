@@ -8,8 +8,9 @@ import (
 
 func main() {
 	storage := flag.String("storage", "memory", "Database type to use (mysql, mongo or memory)")
+	currencyConverter := flag.String("currency-converter", "preset", "Currency Converter to use (local or external api)")
 	flag.Parse()
-	app := framework.NewApp(*storage)
+	app := framework.NewApp(*storage, *currencyConverter)
 
 	err := http.ListenAndServe(":9099", app)
 	if err != nil {
