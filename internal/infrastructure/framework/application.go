@@ -1,6 +1,7 @@
 package framework
 
 import (
+	"go-clean-arch-example/internal/application/services"
 	"go-clean-arch-example/internal/application/usecases"
 	"go-clean-arch-example/internal/domain"
 	"go-clean-arch-example/internal/infrastructure/inputports/http/handler"
@@ -13,7 +14,7 @@ import (
 	"os"
 )
 
-func NewApp(storage string) *http.ServeMux {
+func NewApp(storage, currencyConverter string) *http.ServeMux {
 	mux := http.NewServeMux()
 
 	// repositories
@@ -24,11 +25,11 @@ func NewApp(storage string) *http.ServeMux {
 	}
 
 	// clients
-	freeCurrencyApiClient := restclients.NewFreeCurrencyApiClient(os.Getenv("API_KEY"))
+	currencyConverterClient := initCurrencyClient(currencyConverter)
 
 	// use-cases
 	ucAddEmployee := usecases.InitEmployeeUseCase(repo)
-	ucGetEmployeeSalary := usecases.InitGetEmployeeSalaryUseCase(repo, freeCurrencyApiClient)
+	ucGetEmployeeSalary := usecases.InitGetEmployeeSalaryUseCase(repo, currencyConverterClient)
 
 	// routes
 	mux.HandleFunc("POST /v1/employees", handler.AddEmployeeHandler(ucAddEmployee))
@@ -46,5 +47,13 @@ func initEmployeeRepository(storage string) (domain.EmployeeRepository, error) {
 	default:
 		return memory.NewInMemoryEmployeeRepository(), nil
 	}
+}
 
+func initCurrencyClient(currencyConverter string) services.CurrencyConverter {
+	switch currencyConverter {
+	case "api":
+		return restclients.NewFreeCurrencyApiClient(os.Getenv("API_KEY"))
+	default:
+		return restclients.NewPresetCurrencyConverter()
+	}
 }
