@@ -20,6 +20,9 @@ Exchange rates can be retrieved from:
 
 ![Architecture Diagram](docs/assets/structure.png "Architecture Diagram")
 
+## Code decisions and conventions
+- [Gitmoji](https://gitmoji.dev/) is used for commit messages
+- Number of external libraries kept to a minimum
 
 ## Things to improve / Things missing
 - Docker compose and images
