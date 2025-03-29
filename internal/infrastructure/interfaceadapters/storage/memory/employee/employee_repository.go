@@ -1,9 +1,9 @@
-package memory
+package employee
 
 import (
 	"context"
 	"github.com/google/uuid"
-	"go-clean-arch-example/internal/domain"
+	"go-clean-arch-example/internal/domain/employee"
 	"time"
 )
 
@@ -21,12 +21,12 @@ type InMemorySalary struct {
 	Value    float64
 }
 
-func toDomainEmployee(emp InMemoryEmployee) domain.Employee {
-	return domain.Employee{
+func toDomainEmployee(emp InMemoryEmployee) employee.Employee {
+	return employee.Employee{
 		Id:      emp.Id,
 		Name:    emp.Name,
 		Country: emp.Country,
-		Salary: domain.Salary{
+		Salary: employee.Salary{
 			Currency: emp.Salary.Currency,
 			Value:    emp.Salary.Value,
 		},
@@ -35,7 +35,7 @@ func toDomainEmployee(emp InMemoryEmployee) domain.Employee {
 	}
 }
 
-func toInMemoryEmployee(e domain.Employee) InMemoryEmployee {
+func toInMemoryEmployee(e employee.Employee) InMemoryEmployee {
 	return InMemoryEmployee{
 		Id:      e.Id,
 		Name:    e.Name,
@@ -60,7 +60,7 @@ func NewInMemoryEmployeeRepository() InMemoryEmployeeRepository {
 	}
 }
 
-func (i InMemoryEmployeeRepository) Save(_ context.Context, e domain.Employee) error {
+func (i InMemoryEmployeeRepository) Save(_ context.Context, e employee.Employee) error {
 	employee := toInMemoryEmployee(e)
 	i.employees[employee.Id] = employee
 	return nil
@@ -69,20 +69,20 @@ func (i InMemoryEmployeeRepository) Save(_ context.Context, e domain.Employee) e
 func (i InMemoryEmployeeRepository) Delete(_ context.Context, id uuid.UUID) error {
 	_, ok := i.employees[id]
 	if !ok {
-		return domain.ErrEmployeeNotFound
+		return employee.ErrEmployeeNotFound
 	}
 
 	delete(i.employees, id)
 	return nil
 }
 
-func (i InMemoryEmployeeRepository) GetById(_ context.Context, id uuid.UUID) (*domain.Employee, error) {
-	employee, ok := i.employees[id]
+func (i InMemoryEmployeeRepository) GetById(_ context.Context, id uuid.UUID) (*employee.Employee, error) {
+	empl, ok := i.employees[id]
 	if !ok {
-		return nil, domain.ErrEmployeeNotFound
+		return nil, employee.ErrEmployeeNotFound
 	}
 
-	dEmployee := toDomainEmployee(employee)
+	dEmployee := toDomainEmployee(empl)
 
 	return &dEmployee, nil
 }

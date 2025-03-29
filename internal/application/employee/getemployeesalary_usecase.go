@@ -1,10 +1,10 @@
-package usecases
+package employee
 
 import (
 	"context"
 	"github.com/google/uuid"
-	"go-clean-arch-example/internal/application/services"
-	"go-clean-arch-example/internal/domain"
+	"go-clean-arch-example/internal/application/currency"
+	"go-clean-arch-example/internal/domain/employee"
 )
 
 type GetEmployeeSalaryRequest struct {
@@ -34,28 +34,28 @@ type GetEmployeeSalaryUseCase interface {
 }
 
 type getEmployeeSalaryUseCase struct {
-	employeesRepo     domain.EmployeeRepository
-	currencyConverter services.CurrencyConverter
+	employeesRepo     employee.EmployeeRepository
+	currencyConverter currency.CurrencyConverter
 }
 
 func (g getEmployeeSalaryUseCase) GetSalary(ctx context.Context, request GetEmployeeSalaryRequest) (GetEmployeeSalaryResponse, error) {
-	employee, err := g.employeesRepo.GetById(ctx, request.EmployeeId)
+	empl, err := g.employeesRepo.GetById(ctx, request.EmployeeId)
 	if err != nil {
 		return GetEmployeeSalaryResponse{}, err
 	}
 
-	ratio, err := g.currencyConverter.GetExchangeRate(employee.Salary.Currency, request.Currency)
+	ratio, err := g.currencyConverter.GetExchangeRate(empl.Salary.Currency, request.Currency)
 	if err != nil {
 		return GetEmployeeSalaryResponse{}, err
 	}
 
-	convertedSalary := ratio * employee.Salary.Value
+	convertedSalary := ratio * empl.Salary.Value
 
 	return GetEmployeeSalaryResponse{
-		EmployeeId: employee.Id,
+		EmployeeId: empl.Id,
 		Salary: Salary{
-			Currency: employee.Salary.Currency,
-			Value:    employee.Salary.Value,
+			Currency: empl.Salary.Currency,
+			Value:    empl.Salary.Value,
 		},
 		ConvertedSalary: ConvertedSalary{
 			Currency: request.Currency,
@@ -66,7 +66,7 @@ func (g getEmployeeSalaryUseCase) GetSalary(ctx context.Context, request GetEmpl
 
 }
 
-func InitGetEmployeeSalaryUseCase(er domain.EmployeeRepository, cc services.CurrencyConverter) GetEmployeeSalaryUseCase {
+func InitGetEmployeeSalaryUseCase(er employee.EmployeeRepository, cc currency.CurrencyConverter) GetEmployeeSalaryUseCase {
 	return getEmployeeSalaryUseCase{
 		employeesRepo:     er,
 		currencyConverter: cc,

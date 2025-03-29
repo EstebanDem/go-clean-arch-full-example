@@ -1,11 +1,11 @@
-package mongodb
+package employee
 
 import (
 	"context"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
-	"go-clean-arch-example/internal/domain"
+	"go-clean-arch-example/internal/domain/employee"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -37,7 +37,7 @@ func NewEmployeeRepositoryMongo() (EmployeeRepositoryMongo, error) {
 	}, nil
 }
 
-func (empRepo EmployeeRepositoryMongo) Save(ctx context.Context, e domain.Employee) error {
+func (empRepo EmployeeRepositoryMongo) Save(ctx context.Context, e employee.Employee) error {
 	doc := toEmployeeDocument(e)
 	_, err := empRepo.collection.InsertOne(ctx, doc)
 
@@ -55,7 +55,7 @@ func (empRepo EmployeeRepositoryMongo) Delete(ctx context.Context, id uuid.UUID)
 	return err
 }
 
-func (empRepo EmployeeRepositoryMongo) GetById(ctx context.Context, id uuid.UUID) (*domain.Employee, error) {
+func (empRepo EmployeeRepositoryMongo) GetById(ctx context.Context, id uuid.UUID) (*employee.Employee, error) {
 	doc, err := empRepo.getDocumentFromUUID(ctx, id)
 	if err != nil {
 		return nil, err

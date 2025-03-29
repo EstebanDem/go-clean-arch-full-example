@@ -1,4 +1,4 @@
-package services
+package currency
 
 import "github.com/stretchr/testify/mock"
 

@@ -1,8 +1,8 @@
-package mongodb
+package employee
 
 import (
 	"github.com/google/uuid"
-	"go-clean-arch-example/internal/domain"
+	"go-clean-arch-example/internal/domain/employee"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
@@ -22,12 +22,12 @@ type SalaryMongo struct {
 	Value    float64 `bson:"value"`
 }
 
-func toDomainEmployee(e EmployeeMongoDocument) domain.Employee {
-	return domain.Employee{
+func toDomainEmployee(e EmployeeMongoDocument) employee.Employee {
+	return employee.Employee{
 		Id:      e.UUID,
 		Name:    e.Name,
 		Country: e.Country,
-		Salary: domain.Salary{
+		Salary: employee.Salary{
 			Currency: e.Salary.Currency,
 			Value:    e.Salary.Value,
 		},
@@ -36,7 +36,7 @@ func toDomainEmployee(e EmployeeMongoDocument) domain.Employee {
 	}
 }
 
-func toEmployeeDocument(entity domain.Employee) EmployeeMongoDocument {
+func toEmployeeDocument(entity employee.Employee) EmployeeMongoDocument {
 	return EmployeeMongoDocument{
 		UUID:    entity.Id,
 		Name:    entity.Name,

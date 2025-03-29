@@ -1,9 +1,9 @@
-package handler
+package employee
 
 import (
 	"encoding/json"
 	"github.com/google/uuid"
-	"go-clean-arch-example/internal/application/usecases"
+	"go-clean-arch-example/internal/application/employee"
 	"net/http"
 )
 
@@ -24,7 +24,7 @@ type ConvertedSalary struct {
 	Rate     float64 `json:"rate"`
 }
 
-func GetEmployeeSalaryHandler(uc usecases.GetEmployeeSalaryUseCase) http.HandlerFunc {
+func GetEmployeeSalaryHandler(uc employee.GetEmployeeSalaryUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("id")
 		currency := r.PathValue("currency")
@@ -39,7 +39,7 @@ func GetEmployeeSalaryHandler(uc usecases.GetEmployeeSalaryUseCase) http.Handler
 			return
 		}
 
-		employeeRequest := usecases.GetEmployeeSalaryRequest{
+		employeeRequest := employee.GetEmployeeSalaryRequest{
 			EmployeeId: uuid.MustParse(id),
 			Currency:   currency,
 		}
@@ -65,7 +65,7 @@ func GetEmployeeSalaryHandler(uc usecases.GetEmployeeSalaryUseCase) http.Handler
 	}
 }
 
-func toGetEmployeeSalaryJsonResponse(er usecases.GetEmployeeSalaryResponse) GetEmployeeSalaryJsonResponse {
+func toGetEmployeeSalaryJsonResponse(er employee.GetEmployeeSalaryResponse) GetEmployeeSalaryJsonResponse {
 	return GetEmployeeSalaryJsonResponse{
 		EmployeeId: er.EmployeeId,
 		Salary: Salary{

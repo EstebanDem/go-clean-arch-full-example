@@ -1,10 +1,10 @@
-package memory
+package employee
 
 import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"go-clean-arch-example/internal/domain"
+	"go-clean-arch-example/internal/domain/employee"
 	"log"
 	"testing"
 	"time"
@@ -27,14 +27,14 @@ func TestInMemoryEmployeeRepository_GetByIdNotFound(t *testing.T) {
 	employeeRepo := buildInMemoryEmployeeRepo()
 	_, err := employeeRepo.GetById(context.Background(), uuid.MustParse("fb20b5c9-f99c-9876-a021-3c3edd7f4af9"))
 
-	assert.Equal(t, domain.ErrEmployeeNotFound, err)
+	assert.Equal(t, employee.ErrEmployeeNotFound, err)
 }
 
 func TestInMemoryEmployeeRepository_DeleteNotFound(t *testing.T) {
 	employeeRepo := buildInMemoryEmployeeRepo()
 	err := employeeRepo.Delete(context.Background(), uuid.MustParse("fb20b5c9-f99c-9876-a021-3c3edd7f4af9"))
 
-	assert.Equal(t, domain.ErrEmployeeNotFound, err)
+	assert.Equal(t, employee.ErrEmployeeNotFound, err)
 }
 
 func TestInMemoryEmployeeRepository_Delete(t *testing.T) {
@@ -46,11 +46,11 @@ func TestInMemoryEmployeeRepository_Delete(t *testing.T) {
 
 func TestInMemoryEmployeeRepository_Save(t *testing.T) {
 	employeeRepo := buildInMemoryEmployeeRepo()
-	err := employeeRepo.Save(context.Background(), domain.Employee{
+	err := employeeRepo.Save(context.Background(), employee.Employee{
 		Id:      uuid.MustParse("fb20b5c9-f99c-9876-a021-3c3edd7f4af9"),
 		Name:    "Hector",
 		Country: "USA",
-		Salary: domain.Salary{
+		Salary: employee.Salary{
 			Currency: "USD",
 			Value:    250.0,
 		},
@@ -65,11 +65,11 @@ func TestInMemoryEmployeeRepository_Save(t *testing.T) {
 
 func buildInMemoryEmployeeRepo() InMemoryEmployeeRepository {
 	employeeRepo := NewInMemoryEmployeeRepository()
-	err := employeeRepo.Save(context.Background(), domain.Employee{
+	err := employeeRepo.Save(context.Background(), employee.Employee{
 		Id:      employeeId,
 		Name:    "Walter",
 		Country: "Argentina",
-		Salary: domain.Salary{
+		Salary: employee.Salary{
 			Currency: "ARS",
 			Value:    270.00,
 		},

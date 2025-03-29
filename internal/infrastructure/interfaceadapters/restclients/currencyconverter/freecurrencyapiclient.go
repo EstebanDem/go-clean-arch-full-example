@@ -1,4 +1,4 @@
-package restclients
+package currencyconverter
 
 import (
 	"encoding/json"

@@ -1,4 +1,4 @@
-package domain
+package employee
 
 import (
 	"github.com/stretchr/testify/assert"

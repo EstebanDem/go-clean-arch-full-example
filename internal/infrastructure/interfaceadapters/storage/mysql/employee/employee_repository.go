@@ -1,4 +1,4 @@
-package mysql
+package employee
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
-	"go-clean-arch-example/internal/domain"
+	"go-clean-arch-example/internal/domain/employee"
 	"time"
 )
 
@@ -74,7 +74,7 @@ func NewMySqlEmployeeRepository() (EmployeeRepositoryMySql, error) {
 
 }
 
-func (er EmployeeRepositoryMySql) Save(ctx context.Context, e domain.Employee) error {
+func (er EmployeeRepositoryMySql) Save(ctx context.Context, e employee.Employee) error {
 	result, err := er.db.ExecContext(ctx, `insert into salary (currency, wage)
 	values (?, ?)`, e.Salary.Currency, e.Salary.Value)
 	if err != nil {
@@ -114,7 +114,7 @@ func (er EmployeeRepositoryMySql) Delete(ctx context.Context, id uuid.UUID) erro
 	return nil
 }
 
-func (er EmployeeRepositoryMySql) GetById(ctx context.Context, id uuid.UUID) (*domain.Employee, error) {
+func (er EmployeeRepositoryMySql) GetById(ctx context.Context, id uuid.UUID) (*employee.Employee, error) {
 	employeeRow, err := er.getRowFromUUID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -154,12 +154,12 @@ func (er EmployeeRepositoryMySql) getRowFromUUID(ctx context.Context, uuId uuid.
 	return employeeRecord, nil
 }
 
-func toEmployeeDomain(er EmployeeWithSalary) domain.Employee {
-	return domain.Employee{
+func toEmployeeDomain(er EmployeeWithSalary) employee.Employee {
+	return employee.Employee{
 		Id:      er.uuid,
 		Name:    er.Name,
 		Country: er.Country,
-		Salary: domain.Salary{
+		Salary: employee.Salary{
 			Currency: er.Currency,
 			Value:    er.Wage,
 		},

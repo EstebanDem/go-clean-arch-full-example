@@ -1,10 +1,10 @@
-package handler
+package employee
 
 import (
 	"encoding/json"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
-	"go-clean-arch-example/internal/application/usecases"
+	"go-clean-arch-example/internal/application/employee"
 	"net/http"
 	"time"
 )
@@ -25,7 +25,7 @@ type AddEmployeeResponseJson struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func AddEmployeeHandler(uc usecases.AddEmployeeUseCase) http.HandlerFunc {
+func AddEmployeeHandler(uc employee.AddEmployeeUseCase) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var addEmployeeRequest AddEmployeeRequestJson
 		err := json.NewDecoder(r.Body).Decode(&addEmployeeRequest)
@@ -61,18 +61,18 @@ func AddEmployeeHandler(uc usecases.AddEmployeeUseCase) http.HandlerFunc {
 	}
 }
 
-func (r AddEmployeeRequestJson) toAddEmployeeRequest() usecases.AddEmployeeRequest {
-	return usecases.AddEmployeeRequest{
+func (r AddEmployeeRequestJson) toAddEmployeeRequest() employee.AddEmployeeRequest {
+	return employee.AddEmployeeRequest{
 		Name:    r.Name,
 		Country: r.Country,
-		Salary: usecases.SalaryRequest{
+		Salary: employee.SalaryRequest{
 			Currency: r.Salary.Currency,
 			Value:    r.Salary.Value,
 		},
 	}
 }
 
-func toAddEmployeeResponseJson(r usecases.AddEmployeeResponse) AddEmployeeResponseJson {
+func toAddEmployeeResponseJson(r employee.AddEmployeeResponse) AddEmployeeResponseJson {
 	return AddEmployeeResponseJson{
 		Id:        r.Id,
 		CreatedAt: r.CreatedAt,

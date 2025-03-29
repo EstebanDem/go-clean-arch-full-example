@@ -1,11 +1,11 @@
-package usecases
+package employee
 
 import (
 	"context"
 	"errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"go-clean-arch-example/internal/domain"
+	"go-clean-arch-example/internal/domain/employee"
 	"go-clean-arch-example/internal/pkg"
 	"testing"
 )
@@ -17,11 +17,11 @@ func TestGetEmployeeSalaryUseCase_GetSalaryEmployeeNotFound(t *testing.T) {
 		Currency:   "MXN",
 	}
 
-	employeeRepo.On("GetById", mock.Anything, mock.Anything).Return(&domain.Employee{}, domain.ErrEmployeeNotFound)
+	employeeRepo.On("GetById", mock.Anything, mock.Anything).Return(&employee.Employee{}, employee.ErrEmployeeNotFound)
 	uc := InitGetEmployeeSalaryUseCase(&employeeRepo, &currencyConverterMock{})
 
 	_, err := uc.GetSalary(context.Background(), request)
-	assert.Equal(t, domain.ErrEmployeeNotFound, err)
+	assert.Equal(t, employee.ErrEmployeeNotFound, err)
 }
 
 func TestGetEmployeeSalaryUseCase_GetSalaryEmployeeRatioServiceError(t *testing.T) {
@@ -32,8 +32,8 @@ func TestGetEmployeeSalaryUseCase_GetSalaryEmployeeRatioServiceError(t *testing.
 		Currency:   "MXN",
 	}
 
-	employeeRepo.On("GetById", mock.Anything, mock.Anything).Return(&domain.Employee{
-		Salary: domain.Salary{
+	employeeRepo.On("GetById", mock.Anything, mock.Anything).Return(&employee.Employee{
+		Salary: employee.Salary{
 			Currency: "USD",
 			Value:    3000,
 		},
@@ -54,8 +54,8 @@ func TestGetEmployeeSalaryUseCase_GetSalaryEmployee(t *testing.T) {
 		Currency:   "MXN",
 	}
 
-	employeeRepo.On("GetById", mock.Anything, mock.Anything).Return(&domain.Employee{
-		Salary: domain.Salary{
+	employeeRepo.On("GetById", mock.Anything, mock.Anything).Return(&employee.Employee{
+		Salary: employee.Salary{
 			Currency: "USD",
 			Value:    3000,
 		},
