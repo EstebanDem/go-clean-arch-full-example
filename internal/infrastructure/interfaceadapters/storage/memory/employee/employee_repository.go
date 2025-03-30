@@ -55,6 +55,22 @@ type InMemoryEmployeeRepository struct {
 
 func NewInMemoryEmployeeRepository() InMemoryEmployeeRepository {
 	employees := make(map[uuid.UUID]InMemoryEmployee)
+
+	// default employee added for testing
+	eId, _ := uuid.Parse("aa02193c-0592-4191-955f-eefdc04ea35d")
+	now := time.Now()
+	employees[eId] = InMemoryEmployee{
+		Id:      eId,
+		Name:    "George",
+		Country: "Michael",
+		Salary: InMemorySalary{
+			Currency: "USD",
+			Value:    1000,
+		},
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
 	return InMemoryEmployeeRepository{
 		employees: employees,
 	}
