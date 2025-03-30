@@ -1,0 +1,12 @@
+{
+  "employee_id": "aa02193c-0592-4191-955f-eefdc04ea35d",
+  "salary": {
+    "currency": "USD",
+    "value": 1000
+  },
+  "converted_salary": {
+    "currency": "ARS",
+    "value": 1300000,
+    "rate": 1300
+  }
+}
